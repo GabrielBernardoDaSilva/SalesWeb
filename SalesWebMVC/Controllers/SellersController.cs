@@ -43,6 +43,12 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
         {
+            if (!ModelState.IsValid)
+            {
+                var departments = _departmentService.FindAll();
+                var ViewModel = new SellerFormViewModel { Departments = departments };
+                return View(nameof(ViewModel));
+            }
             _sellerServices.Insert(seller);
             return RedirectToAction(nameof(Index));
         }
@@ -79,6 +85,7 @@ namespace SalesWebMVC.Controllers
 
         public IActionResult Edit(int ? id)
         {
+
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             var obj = _sellerServices.FindById(id.Value);
@@ -95,6 +102,12 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
+            if (!ModelState.IsValid)
+            {
+                var departments = _departmentService.FindAll();
+                var ViewModel = new SellerFormViewModel {Seller= seller, Departments = departments };
+                return View(nameof(ViewModel));
+            }
             if (id != seller.Id)
                 return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
             try
